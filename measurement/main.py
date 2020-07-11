@@ -68,10 +68,23 @@ result = image.copy()
 
 cv2.circle(result, (x, y), r, (0, 255, 0), 2)
 cv2.circle(result, (x, y), 2, (0, 255, 0), 2)
-x1, y1, x2, y2 = lines[0]
-cv2.line(result, (x1, y1), (x2, y2), (0, 255, 0), 2)
-x1, y1, x2, y2 = lines[-1]
-cv2.line(result, (x1, y1), (x2, y2), (0, 255, 0), 2)
+left_x1, left_y1, left_x2, left_y2 = lines[0]
+cv2.line(result, (left_x1, left_y1), (left_x2, left_y2), (0, 255, 0), 2)
+right_x1, right_y1, right_x2, right_y2 = lines[-1]
+cv2.line(result, (right_x1, right_y1), (right_x2, right_y2), (0, 255, 0), 2)
+
+left_x = int(left_x1 + (left_x2 - left_x1) *
+             (y - left_y1) / (left_y2 - left_y1))
+right_x = int(right_x1 + (right_x2 - right_x1) *
+              (y - right_y1) / (right_y2 - right_y1))
+cv2.line(result, (left_x, y), (right_x, y), (0, 255, 0), 2)
+
+width = (right_x - left_x) / r / 2 * 20.5
+font = cv2.FONT_HERSHEY_SIMPLEX
+cv2.putText(result, f'{width:.2f}mm', (x - 75, y - r * 2),
+            font, 1, (255, 255, 255), 2)
+
+cv2.imwrite('result.png', result)
 
 cv2.imshow("Origin", image)
 cv2.imshow("Result", result)
